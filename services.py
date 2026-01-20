@@ -15,3 +15,13 @@ def get_books(db: Session):
 def get_book(db: Session, book_id: int):
     return db.query(Book).filter(Book.id==book_id).first()
 
+def update_book(db: Session, book: BookCreate, book_id: int):
+    book_queryset = db.query(Book).filter(Book.id==book_id).first()
+
+    if book_queryset:
+        for key, value in book.model_dump().items():
+            setattr(book_queryset, key, value)
+        db.commit()
+        db.refresh(book_queryset)
+
+    return book_queryset
